@@ -7,10 +7,12 @@
 
 import NIO
 import NIOHTTP1
+import Ink
+import Foundation
 
 public class ServerResponse {
-    private let headers = HTTPHeaders()
     private let channel: Channel
+    private var headers = HTTPHeaders()
     private var didWriteHeader = false
     private var didEnd = false
     
@@ -38,6 +40,41 @@ public class ServerResponse {
             .map(end)
     }
     
+    func render(pathContext: String = #file, _ template: String, _ options: Any? = nil) {
+        let res = self
+        
+        guard let path = path(to: template, in: pathContext) else {
+            res.status = .notFound
+            return res.send("Error: Could eiter not find template -> \(template) or pahtContext -> \(pathContext)")
+        }
+        
+        fs.readFile(path) { error, data in
+            guard var data = data else {
+                res.status = .internalServerError
+                return res.send("Error: \(error as Optional)")
+            }
+            
+            data.writeBytes([0])
+            
+            let parser = MarkdownParser()
+            let dataString = String(buffer: data)
+            let result = parser.html(from: dataString)
+            
+            res["Content-Type"] = "text/html"
+            res.send(result)
+        }
+    }
+    
+    private func path(to resource: String,
+                      in pathContext: String) -> String? {
+        var url = URL(fileURLWithPath: pathContext)
+        url.deleteLastPathComponent()
+        url.appendPathComponent("templates", isDirectory: true)
+        url.appendPathComponent(resource)
+        url.appendPathExtension("md")
+        return url.path
+    }
+    
     private func flushHeader() {
         guard !didWriteHeader else { return }
         didWriteHeader = true
@@ -59,5 +96,20 @@ public class ServerResponse {
         didEnd = true
         
         _ = channel.writeAndFlush(HTTPServerResponsePart.end(nil)).map { self.channel.close() }
+    }
+    
+    private subscript(name: String) -> String? {
+        set {
+            assert(!didWriteHeader, "header is out!")
+            if let v = newValue {
+                headers.replaceOrAdd(name: name, value: v)
+            }
+            else {
+                headers.remove(name: name)
+            }
+        }
+        get {
+            return headers[name].joined(separator: ", ")
+        }
     }
 }

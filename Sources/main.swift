@@ -7,19 +7,18 @@
 
 let server = Server()
 
+// MARK: Middleware
 // Middleware to parse url queryItems
 server.use(queryString(request:response:next:))
 // Middleware to log requests
 server.use(log(request:response:next:))
-server.get("/foo") { request, response, next in
-    guard let text = request.param("text") else {
-        next()
-        return
-    }
-    response.send("Hello, \(text) world!")
+
+// MARK: Get and render page
+server.get("/self") { request, response, next in
+    response.render("Self")
 }
 server.get { request, response, next in
-    response.send("Welcome to the swifty Server!")
+    response.render("Welcome")
 }
 
 server.listen(8888)

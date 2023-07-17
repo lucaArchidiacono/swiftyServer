@@ -18,6 +18,10 @@ let package = Package(
             url: "https://github.com/apple/swift-nio-ssl.git",
             from: "2.0.0"
         ),
+        .package(
+            url: "https://github.com/johnsundell/ink.git",
+            from: "0.1.0"
+       )
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -36,6 +40,10 @@ let package = Package(
                 .product(
                     name: "NIOSSL",
                     package: "swift-nio-ssl"
+                ),
+                .product(
+                    name: "Ink",
+                    package: "ink"
                 )
             ],
             path: "Sources"

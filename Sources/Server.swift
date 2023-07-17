@@ -8,15 +8,16 @@
 import NIO
 import NIOHTTP1
 
+let loopGroup = MultiThreadedEventLoopGroup(numberOfThreads: System.coreCount)
+
 public final class Server: Router {
-    let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: System.coreCount)
     
     func listen(_ port: Int) {
         defer {
-            try? eventLoopGroup.syncShutdownGracefully()
+            try? loopGroup.syncShutdownGracefully()
         }
         
-        let serverBootstrap = ServerBootstrap(group: eventLoopGroup)
+        let serverBootstrap = ServerBootstrap(group: loopGroup)
             .serverChannelOption(ChannelOptions.backlog, value: 256)
             .serverChannelOption(ChannelOptions.socketOption(.so_reuseaddr), value: 1)
             .childChannelInitializer { channel in
