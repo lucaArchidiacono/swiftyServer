@@ -58,10 +58,11 @@ public class ServerResponse {
             
             let parser = MarkdownParser()
             let dataString = String(buffer: data)
-            let result = parser.html(from: dataString)
+            let body = parser.html(from: dataString)
+            let htmlTemplate = HTMLTemplate(title: template, body: body)
             
             res["Content-Type"] = "text/html"
-            res.send(result)
+            res.send(htmlTemplate.render())
         }
     }
     
