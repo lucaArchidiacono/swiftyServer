@@ -30,7 +30,7 @@ public final class Server: Router {
             .childChannelOption(ChannelOptions.maxMessagesPerRead, value: 1)
         
         do {
-            let channel = try serverBootstrap.bind(host: "localhost", port: port).wait()
+            let channel = try serverBootstrap.bind(host: "0.0.0.0", port: port).wait()
             print("Server started and listening on \(channel.localAddress!)")
             try channel.closeFuture.wait()
             print("Server closed")
