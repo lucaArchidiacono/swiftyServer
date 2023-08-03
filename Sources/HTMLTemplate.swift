@@ -24,14 +24,23 @@ enum Header: Joinable {
         return [
             .charset(.utf8),
             .style([
-                .body(["font-family": "-apple-system, sans-serif"]),
+                .body([
+                    "font-family": "-apple-system, sans-serif"
+                ]),
                 .h1([
                     "color": "rgb(2, 123, 227)",
                     "border-bottom": "1px solid rgb(2, 123, 227)",
                     "padding-bottom": "0.1em",
                     "text-align": "center",
                     "font-size": "2em",
-                ])
+                ]),
+                .code([
+                    "font-family": "Courier, monospace",
+                    "background-color": "#f0f0f0",
+                    "padding": "0.2em 0.4em",
+                    "border-radius": "3px",
+                    "display": "block",
+                ]),
             ])]
     }
 }
@@ -46,11 +55,16 @@ enum Style: Joinable {
     typealias Content = [String: String]
     case body(Content)
     case h1(Content)
+    case code(Content)
     
     private var key: String {
         switch self {
-        case .body: return "body"
-        case .h1: return "h1"
+        case .body:
+            return "body"
+        case .h1:
+            return "h1"
+        case .code:
+            return "code"
         }
     }
     
@@ -68,7 +82,9 @@ enum Style: Joinable {
     
     private var content: Content {
         switch self {
-        case .body(let content), .h1(let content):
+        case .body(let content),
+                .h1(let content),
+                .code(let content):
             return content
         }
     }

@@ -46,7 +46,10 @@ let package = Package(
                     package: "ink"
                 )
             ],
-            path: "Sources"
+            path: "Sources",
+            resources: [
+                .process("Resources")
+            ]
         )
     ]
 )
