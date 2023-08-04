@@ -11,14 +11,6 @@ let package = Package(
             from: "2.0.0"
         ),
         .package(
-            url: "https://github.com/apple/swift-nio-http2.git",
-            from: "1.0.0"
-        ),
-        .package(
-            url: "https://github.com/apple/swift-nio-ssl.git",
-            from: "2.0.0"
-        ),
-        .package(
             url: "https://github.com/johnsundell/ink.git",
             from: "0.1.0"
        )
@@ -34,12 +26,8 @@ let package = Package(
                     package: "swift-nio"
                 ),
                 .product(
-                    name: "NIOHTTP2",
-                    package: "swift-nio-http2"
-                ),
-                .product(
-                    name: "NIOSSL",
-                    package: "swift-nio-ssl"
+                    name: "NIOHTTP1",
+                    package: "swift-nio"
                 ),
                 .product(
                     name: "Ink",

@@ -1,6 +1,6 @@
 //
 //  main.swift
-//  
+//
 //
 //  Created by Luca Archidiacono on 12.07.23.
 //
