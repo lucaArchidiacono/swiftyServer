@@ -109,6 +109,7 @@ struct HTMLTemplate {
         <!DOCTYPE html>
         <html>
         <head>
+        <meta http-equiv="Content-Security-Policy" content="default-src https: 'unsafe-inline'">
          \(headers.joined())
          <title>\(title)</title>
         </head>

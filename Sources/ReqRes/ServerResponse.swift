@@ -61,7 +61,6 @@ public class ServerResponse {
             let body = parser.html(from: dataString)
             let htmlTemplate = HTMLTemplate(title: template, body: body)
             
-            res["Content-Type"] = "text/html"
             res.send(htmlTemplate.render())
         }
     }
@@ -79,8 +78,23 @@ public class ServerResponse {
     private func flushHeader() {
         guard !didWriteHeader else { return }
         didWriteHeader = true
-        
-        let head = HTTPResponseHead(version: .init(major: 1, minor: 1), status: status)
+
+        let httpHeaders = HTTPHeaders([
+            ("Content-Type", "text/html"),
+            /// HTTP Strict Transport Security (HSTS) header
+            ("Strict-Transport-Security", "max-age=63072000"),
+            /// X-Content-Type-Options: nosniff
+            ("X-Content-Type-Options", "nosniff"),
+            /// X-Frame-Options (XFO) header
+            /// Only allow my site to frame itself
+            ("Content-Security-Policy", "frame-ancestors 'self'"),
+            ("X-Frame-Options", "SAMEORIGIN"),
+            /// X-XSS-Protection header
+            ("X-XSS-Protection", "0"),
+        ])
+        let head = HTTPResponseHead(version: .init(major: 1, minor: 1),
+                                    status: status,
+                                    headers: httpHeaders)
         let part = HTTPServerResponsePart.head(head)
         
         _ = channel.writeAndFlush(part)
