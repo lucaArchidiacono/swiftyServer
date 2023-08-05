@@ -1,0 +1,28 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "name": "Debug swiftyServer",
+            "program": "${workspaceFolder:swiftyServer}/.build/debug/swiftyServer",
+            "args": [],
+            "cwd": "${workspaceFolder:swiftyServer}",
+            "preLaunchTask": "swift: Build Debug swiftyServer"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "name": "Release swiftyServer",
+            "program": "${workspaceFolder:swiftyServer}/.build/release/swiftyServer",
+            "args": [],
+            "cwd": "${workspaceFolder:swiftyServer}",
+            "preLaunchTask": "swift: Build Release swiftyServer"
+        }
+    ]
+}

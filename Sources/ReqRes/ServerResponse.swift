@@ -69,7 +69,7 @@ public class ServerResponse {
                       in pathContext: String) -> String? {
         var url = URL(fileURLWithPath: pathContext)
         url.deleteLastPathComponent()
-        url.appendPathComponent("templates", isDirectory: true)
+        url.appendPathComponent("Resources", isDirectory: true)
         url.appendPathComponent(resource)
         url.appendPathExtension("md")
         return url.path

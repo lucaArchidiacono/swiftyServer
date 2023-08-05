@@ -18,7 +18,7 @@ server.get("/self") { request, response, next in
     response.render("Self")
 }
 server.get("/swifty") { request, response, next in
-    response.send("Swifty Documentation")
+    response.send("In Progress...")
 }
 server.get { request, response, next in
     response.render("Welcome")
