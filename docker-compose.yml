@@ -2,6 +2,7 @@ version: '3'
 services:
   swift_server:
     build: .
+    restart: unless-stopped
     ports:
       - "8888:8888"
     tty: true
