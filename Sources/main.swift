@@ -15,13 +15,13 @@ server.use(log(request:response:next:))
 
 // MARK: Get and render page
 server.get("/self") { request, response, next in
-    response.render("Self")
+    response.render(.self)
 }
 server.get("/swifty") { request, response, next in
-    response.send("In Progress...")
+    response.render(.swifty)
 }
 server.get { request, response, next in
-    response.render("Welcome")
+    response.render(.welcome)
 }
 
 server.listen(8888)

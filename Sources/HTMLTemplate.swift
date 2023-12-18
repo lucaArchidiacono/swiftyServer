@@ -39,7 +39,9 @@ enum Header: Joinable {
                     "background-color": "#f0f0f0",
                     "padding": "0.2em 0.4em",
                     "border-radius": "3px",
-                    "display": "block",
+                ]),
+                .codeBlock([
+                    "display": "inline-block",
                 ]),
             ])]
     }
@@ -55,6 +57,8 @@ enum Style: Joinable {
     typealias Content = [String: String]
     case body(Content)
     case h1(Content)
+    case codeBlock(Content)
+    case inlineCode(Content)
     case code(Content)
     
     private var key: String {
@@ -63,6 +67,10 @@ enum Style: Joinable {
             return "body"
         case .h1:
             return "h1"
+        case .codeBlock:
+            return "#code-block"
+        case .inlineCode:
+            return "#inline-code"
         case .code:
             return "code"
         }
@@ -84,6 +92,8 @@ enum Style: Joinable {
         switch self {
         case .body(let content),
                 .h1(let content),
+                .codeBlock(let content),
+                .inlineCode(let content),
                 .code(let content):
             return content
         }

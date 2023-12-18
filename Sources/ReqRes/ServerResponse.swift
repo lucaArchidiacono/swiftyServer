@@ -15,6 +15,7 @@ public class ServerResponse {
     private var headers = HTTPHeaders()
     private var didWriteHeader = false
     private var didEnd = false
+    private let resourceLoader = ResourceLoader()
     
     var status = HTTPResponseStatus.ok
     
@@ -40,15 +41,15 @@ public class ServerResponse {
             .map(end)
     }
     
-    func render(pathContext: String = #file, _ template: String, _ options: Any? = nil) {
+    func render(_ resource: ResourceLoader.Resource, _ options: Any? = nil) {
         let res = self
         
-        guard let path = path(to: template, in: pathContext) else {
+        guard let url = resourceLoader.load(resource) else {
             res.status = .notFound
-            return res.send("Error: Could eiter not find template -> \(template) or pahtContext -> \(pathContext)")
+            return res.send("Error: Could not find template -> \(resource.rawValue)")
         }
         
-        fs.readFile(path) { error, data in
+        fs.readFile(url.path) { error, data in
             guard var data = data else {
                 res.status = .internalServerError
                 return res.send("Error: \(error as Optional)")
@@ -56,23 +57,19 @@ public class ServerResponse {
             
             data.writeBytes([0])
             
-            let parser = MarkdownParser()
+            let inlineCodeModifier = Modifier(target: .inlineCode) { html, markdown in
+                return html.replacingOccurrences(of: "<code>", with: "<code id=\"inline-code\">")
+            }
+            let codeBlockModifier = Modifier(target: .codeBlocks) { html, markdown in 
+                return html.replacingOccurrences(of: "<code", with: "<code id=\"code-block\"")
+            }
+            let parser = MarkdownParser(modifiers: [inlineCodeModifier, codeBlockModifier])
             let dataString = String(buffer: data)
             let body = parser.html(from: dataString)
-            let htmlTemplate = HTMLTemplate(title: template, body: body)
+            let htmlTemplate = HTMLTemplate(title: resource.rawValue, body: body)
             
             res.send(htmlTemplate.render())
         }
-    }
-    
-    private func path(to resource: String,
-                      in pathContext: String) -> String? {
-        var url = URL(fileURLWithPath: pathContext)
-        url.deleteLastPathComponent()
-        url.appendPathComponent("Resources", isDirectory: true)
-        url.appendPathComponent(resource)
-        url.appendPathExtension("md")
-        return url.path
     }
     
     private func flushHeader() {

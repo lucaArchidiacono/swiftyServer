@@ -25,6 +25,8 @@ public final class Server: Router {
                     channel.pipeline.addHandler(HTTPHandler(router: self))
                 }
             }
+            // For docker reasons, this needs to be commented out. I couldn't reach my Docker instance when the code contained the following line of code.
+            // After that, I safely managed to reach my endpoints.
 //            .childChannelOption(ChannelOptions.socketOption(.tcp_nodelay), value: 1)
             .childChannelOption(ChannelOptions.socketOption(.so_reuseaddr), value: 1)
             .childChannelOption(ChannelOptions.maxMessagesPerRead, value: 1)
